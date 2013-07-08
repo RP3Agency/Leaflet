@@ -8077,8 +8077,10 @@ L.Control.Layers = L.Control.extend({
 		this._overlayGroups = {};
 		this._lastZIndex = 0;
 		this._handlingClick = false;
+		
+		var i;
 
-		for (var i in baseLayers) {
+		for (i in baseLayers) {
 			this._addLayer(baseLayers[i], i);
 		}
 
@@ -8094,6 +8096,7 @@ L.Control.Layers = L.Control.extend({
 			}
 			group++;
 		}
+		
 	},
 
 	onAdd: function (map) {
