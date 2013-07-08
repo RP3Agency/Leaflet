@@ -8070,6 +8070,7 @@ L.Control.Layers = L.Control.extend({
 	},
 
 	initialize: function (baseLayers, overlays, overlayGroups, options) {
+		
 		L.setOptions(this, options);
 
 		this._layers = {};
@@ -8440,8 +8441,8 @@ L.Control.Layers = L.Control.extend({
 	}
 });
 
-L.control.layers = function (baseLayers, overlays, options) {
-	return new L.Control.Layers(baseLayers, overlays, options);
+L.control.layers = function (baseLayers, overlays, overlayGroups, options) {
+	return new L.Control.Layers(baseLayers, overlays, overlayGroups, options);
 };
 
 
