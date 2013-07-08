@@ -92,9 +92,9 @@ L.Control.Layers = L.Control.extend({
 							layerFound = true;
 						}  
 					}
-					!layerFound || !groupFound ? groupFound = false : null
+					!layerFound || !groupFound ? groupFound = false : null;
 				}
-				groupFound ? delete this._overlayGroups[group] : null
+				groupFound ? delete this._overlayGroups[group] : null;
 			}
 		}
 		this._update();
