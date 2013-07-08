@@ -74,7 +74,7 @@ L.Control.Layers = L.Control.extend({
 	addOverlayGroup: function (overlayGroup) {
 		var newGroupNum = Object.keys(this._overlayGroups).length;
 		this._addLayerGroup(newGroupNum);
-		for (layer in overlayGroup) {
+		for (var layer in overlayGroup) {
 			this._addLayerToGroup(overlayGroup[layer], layer, newGroupNum);
 		}
 		this._update();
@@ -82,19 +82,27 @@ L.Control.Layers = L.Control.extend({
 
 	removeOverlayGroup: function (overlayGroup) {
 		var layersInRemoveGroup = Object.keys(overlayGroup).length;
-		for (group in this._overlayGroups) {
-			if (layersInRemoveGroup == Object.keys(this._overlayGroups[group]).length) {
+		for (var group in this._overlayGroups) {
+			if (layersInRemoveGroup === Object.keys(this._overlayGroups[group]).length) {
 				var groupFound = true;
-				for (rLayer in overlayGroup) {
+				for (var rLayer in overlayGroup) {
 					var layerFound = false;
-					for (pLayer in this._overlayGroups[group]) {
-						if (overlayGroup[rLayer] == this._overlayGroups[group][pLayer].layer) {
+					for (var pLayer in this._overlayGroups[group]) {
+						if (overlayGroup[rLayer] === this._overlayGroups[group][pLayer].layer) {
 							layerFound = true;
-						}  
+						}
 					}
-					!layerFound || !groupFound ? groupFound = false : null;
+					
+					if (!layerFound || !groupFound) {
+						groupFound = false;
+					}
+					
 				}
-				groupFound ? delete this._overlayGroups[group] : null;
+				
+				if (groupFound) {
+					delete this._overlayGroups[group];
+				}
+				
 			}
 		}
 		this._update();
@@ -187,8 +195,12 @@ L.Control.Layers = L.Control.extend({
 
 		this._separator.style.display = overlaysPresent && baseLayersPresent ? '' : 'none';
 		
-		this._overlayGroups ? overlayGroupsPresent = true : overlayGroupsPresent = false;
-		if( overlayGroupsPresent ) {
+		if (this._overlayGroups) {
+			overlayGroupsPresent = true;
+		} else {
+			overlayGroupsPresent = false;
+		}
+		if (overlayGroupsPresent) {
 			for (i in this._overlayGroups) {
 				this._addGroup(this._overlayGroups[i]);
 			}
@@ -276,16 +288,16 @@ L.Control.Layers = L.Control.extend({
 		var container = this._overlayGroupsList;
 		container.appendChild(separator);
 		for (var i in group) {
-			this._addGroupItem(group[i],onclick);
-		}	
+			this._addGroupItem(group[i], onclick);
+		}
 	},
 	
-	_addGroupItem: function (obj, onclick) {
+	_addGroupItem: function (obj) {
 		var label = document.createElement('label');
 
 		var input = document.createElement('input');
 		
-		input.name = 'leaflet-overlay-group-'+obj.group;
+		input.name = 'leaflet-overlay-group-' + obj.group;
 
 		input.type = 'radio';
 		input.checked = this._map.hasLayer(obj.layer);
@@ -305,8 +317,10 @@ L.Control.Layers = L.Control.extend({
 	_onInputClick: function () {
 		var i, input, obj;
 
-		var baseLayers = this._form.getElementsByClassName('leaflet-control-layers-base')[0].getElementsByTagName('input');
-		var overlays = this._form.getElementsByClassName('leaflet-control-layers-overlays')[0].getElementsByTagName('input');
+		var baseLayers = this._form.getElementsByClassName('leaflet-control-layers-base')[0];
+		baseLayers = baseLayers.getElementsByTagName('input');
+		var overlays = this._form.getElementsByClassName('leaflet-control-layers-overlays')[0];
+		overlays = overlays.getElementsByTagName('input');
 		var overlayGroups = this._form.getElementsByClassName('leaflet-control-layers-overlaygroups');
 
 		this._handlingClick = true;
@@ -324,10 +338,10 @@ L.Control.Layers = L.Control.extend({
 		}
 		
 		var groupNum = 0;
-		for (group in this._overlayGroups) {
+		for (var group in this._overlayGroups) {
 			var layerNum = 0;
 			var overlayGroup = overlayGroups[groupNum].getElementsByTagName('input');
-			for (layer in this._overlayGroups[group]) {          
+			for (var layer in this._overlayGroups[group]) {
 				input = overlayGroup[layerNum];
 				obj = this._overlayGroups[group][layer];
 
