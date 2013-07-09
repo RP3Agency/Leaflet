@@ -352,6 +352,7 @@ L.Control.Layers = L.Control.extend({
 				if (input.checked && !this._map.hasLayer(obj.layer)) {
 					this._map.removeLayer(obj.layer);
 					this._map.addLayer(obj.layer, obj.overlay);
+					this._map.fire('overlaygroupchange', obj);
 				} else if (!input.checked && this._map.hasLayer(obj.layer)) {
 					this._map.removeLayer(obj.layer);
 				}
