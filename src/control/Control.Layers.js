@@ -306,6 +306,11 @@ L.Control.Layers = L.Control.extend({
 
 		input.type = 'radio';
 		input.checked = this._map.hasLayer(obj.layer);
+		
+		if (input.checked) {
+			L.DomUtil.addClass(label, 'leaflet-active-control-item');
+		}
+		
 		input.layerId = L.Util.stamp(obj.layer);
 
 		L.DomEvent.addListener(input, 'click', this._onInputClick, this);
@@ -320,7 +325,9 @@ L.Control.Layers = L.Control.extend({
 	},
 
 	_onInputClick: function () {
-		var i, input, obj;
+		var i, input, label, obj, baseObj, baseLabel;
+		
+		var activeClass = 'leaflet-active-control-item';
 
 		var baseLayers = this._form.getElementsByClassName('leaflet-control-layers-base')[0];
 		baseLayers = baseLayers.getElementsByTagName('input');
@@ -346,26 +353,34 @@ L.Control.Layers = L.Control.extend({
 		for (var group in this._overlayGroups) {
 			var layerNum = 0;
 			var overlayGroup = overlayGroups[groupNum].getElementsByTagName('input');
-			var baseObj = null;
+			var overlayGroupLabels = overlayGroups[groupNum].getElementsByTagName('label');
 			for (var layer in this._overlayGroups[group]) {
 				input = overlayGroup[layerNum];
+				label = overlayGroupLabels[layerNum];
 				obj = this._overlayGroups[group][layer];
 				
 				if (obj.layer === this.options.defaultGroup) {
 					baseObj = obj;
+					baseLabel = label;
 				}
 
 				if (input.checked && !this._map.hasLayer(obj.layer)) {
 					this._map.removeLayer(obj.layer);
 					this._map.addLayer(obj.layer, obj.overlay);
+					L.DomUtil.addClass(label, activeClass);
 					this._map.fire('overlaygroupchange', obj);
 				} else if (!input.checked && this._map.hasLayer(obj.layer)) {
 					this._map.removeLayer(obj.layer);
+					L.DomUtil.removeClass(label, activeClass);
 				} else if (input.checked && this._map.hasLayer(obj.layer)) {
 					if (this.options.defaultGroup) {
 						this._map.removeLayer(obj.layer);
 						input.checked = false;
 						this._map.addLayer(this.options.defaultGroup);
+						if (baseLabel) {
+							L.DomUtil.removeClass(label, activeClass);
+							L.DomUtil.addClass(baseLabel, activeClass);
+						}
 						this._map.fire('overlaygroupchange', baseObj);
 					}
 				}
