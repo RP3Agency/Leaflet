@@ -8066,7 +8066,8 @@ L.Control.Layers = L.Control.extend({
 	options: {
 		collapsed: true,
 		position: 'topright',
-		autoZIndex: true
+		autoZIndex: true,
+		defaultGroup: null
 	},
 
 	initialize: function (baseLayers, overlays, overlayGroups, options) {
@@ -8415,6 +8416,13 @@ L.Control.Layers = L.Control.extend({
 					this._map.fire('overlaygroupchange', obj);
 				} else if (!input.checked && this._map.hasLayer(obj.layer)) {
 					this._map.removeLayer(obj.layer);
+				} else if (input.checked && this._map.hasLayer(obj.layer)) {
+					if (this.options.defaultGroup) {
+						this._map.removeLayer(obj.layer);
+						input.checked = false;
+						this._map.addLayer(this.options.defaultGroup);
+						this._map.fire('overlaygroupchange', obj);
+					}
 				}
 				layerNum++;
 			}
