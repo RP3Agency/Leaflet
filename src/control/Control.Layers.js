@@ -346,9 +346,14 @@ L.Control.Layers = L.Control.extend({
 		for (var group in this._overlayGroups) {
 			var layerNum = 0;
 			var overlayGroup = overlayGroups[groupNum].getElementsByTagName('input');
+			var baseObj = null;
 			for (var layer in this._overlayGroups[group]) {
 				input = overlayGroup[layerNum];
 				obj = this._overlayGroups[group][layer];
+				
+				if (obj.layer === this.options.defaultGroup) {
+					baseObj = obj;
+				}
 
 				if (input.checked && !this._map.hasLayer(obj.layer)) {
 					this._map.removeLayer(obj.layer);
@@ -361,7 +366,7 @@ L.Control.Layers = L.Control.extend({
 						this._map.removeLayer(obj.layer);
 						input.checked = false;
 						this._map.addLayer(this.options.defaultGroup);
-						this._map.fire('overlaygroupchange', obj);
+						this._map.fire('overlaygroupchange', baseObj);
 					}
 				}
 				layerNum++;
