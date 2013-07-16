@@ -298,6 +298,11 @@ L.Control.Layers = L.Control.extend({
 	},
 	
 	_addGroupItem: function (obj) {
+		
+		if (typeof obj === 'function') {
+			return;
+		}
+		
 		var label = document.createElement('label');
 
 		var input = document.createElement('input');
